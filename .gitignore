@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Hardhat
+cache/
+artifacts/
+typechain-types/
+
+# Environment
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Hardhat sample files (we don't need these)
+contracts/Counter.sol
+contracts/Counter.t.sol
+test/Counter.ts
+scripts/send-op-tx.ts
+ignition/
+
+# Logs
+*.log

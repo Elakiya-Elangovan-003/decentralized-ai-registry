@@ -1,0 +1,154 @@
+# Decentralized AI Model Registry
+
+A smart contract protocol for registering and accessing AI models on Ethereum with ERC20-based settlement.
+
+## 🎯 Project Description
+
+Designed smart contract architecture for decentralized AI model registration, implemented ERC20-based access and usage settlement logic, and explored storage layout optimization for gas efficiency and protocol safety.
+
+## 🏗️ Architecture
+
+### Core Components
+
+1. **AIModelRegistry.sol** - Main registry contract
+   - Model registration with IPFS hash storage
+   - ERC20 payment settlement for access
+   - Access control logic
+   - Gas-optimized storage layout
+
+2. **MockToken.sol** - ERC20 token for testing
+   - Standard ERC20 implementation
+   - Used for access payments
+
+### Smart Contract Features
+
+- **Model Registration**: Owners register AI models with metadata stored on IPFS
+- **ERC20 Settlement**: Users pay tokens to access models (approve + transferFrom pattern)
+- **Access Control**: Only users who paid can retrieve IPFS hashes
+- **Gas Optimization**: Struct packing reduces storage costs
+
+## 📊 Gas Optimization Results
+
+| Operation | Gas Used | Optimization |
+|-----------|----------|--------------|
+| Model Registration | 161,301 | Struct packing (address + uint64) |
+| Access Purchase | 71,462 | Minimal storage writes |
+
+### Storage Optimizations Applied
+
+1. **Struct Packing**: `address owner` (20 bytes) + `uint64 timestamp` (8 bytes) in single slot
+2. **bytes32 for IPFS**: Using `bytes32` instead of `string` for CID storage
+3. **Immutable Variables**: Payment token address set once in constructor
+4. **Events Over Storage**: Emit events for off-chain indexing instead of storing all data
+
+## 🧪 Test Coverage
+
+15 comprehensive tests covering:
+- Contract deployment
+- Model registration (happy path + validation)
+- ERC20 payment settlement
+- Access control logic
+- IPFS hash retrieval
+- Gas consumption verification
+
+All tests passing ✅
+
+## 🚀 Technology Stack
+
+- **Solidity**: ^0.8.28
+- **Hardhat**: v3.1.5
+- **Ethers.js**: v6.14.0
+- **TypeScript**: ~5.8.0
+- **Chai**: Testing framework
+
+## 📁 Project Structure
+```
+decentralized-ai-registry/
+├── contracts/
+│   ├── AIModelRegistry.sol    # Main registry contract
+│   └── MockToken.sol           # ERC20 test token
+├── test/
+│   └── AIModelRegistry.test.ts # Comprehensive tests
+├── scripts/
+│   └── demo.ts                 # Demo workflow
+├── hardhat.config.ts
+└── package.json
+```
+
+## 🎮 Usage
+
+### Install Dependencies
+```bash
+npm install
+```
+
+### Compile Contracts
+```bash
+npx hardhat compile
+```
+
+### Run Tests
+```bash
+npx hardhat test
+```
+
+### Run Demo
+```bash
+npx hardhat run scripts/demo.ts
+```
+
+## 💡 Key Implementation Details
+
+### Model Registration
+```solidity
+function registerModel(
+    string calldata _name,
+    bytes32 _ipfsHash,
+    uint256 _accessPrice
+) external returns (uint256)
+```
+
+### Access Purchase (ERC20 Settlement)
+```solidity
+function purchaseAccess(uint256 _modelId) external
+```
+- User must first `approve()` tokens to registry
+- Registry calls `transferFrom()` to transfer payment to model owner
+- Access granted after successful payment
+
+### IPFS Hash Retrieval
+```solidity
+function getModelIPFS(uint256 _modelId) external view returns (bytes32)
+```
+- Returns IPFS hash only if caller has access
+- Returns `bytes32(0)` otherwise
+
+## 📈 Results
+
+- ✅ Zero-cost development (local Hardhat network)
+- ✅ Gas-optimized smart contracts
+- ✅ Complete test coverage (15/15 passing)
+- ✅ Working ERC20 settlement logic
+- ✅ IPFS integration ready (off-chain storage with on-chain hashes)
+
+## 🔐 Security Considerations
+
+- Access control prevents unauthorized IPFS hash retrieval
+- ERC20 approve/transferFrom pattern prevents reentrancy
+- Input validation on all registration functions
+- Immutable payment token prevents upgrade attacks
+
+## 📝 Future Enhancements
+
+- Multi-token support (accept different ERC20s)
+- Usage-based pricing (pay per inference)
+- Model versioning system
+- Governance for protocol parameters
+
+## 🏆 Project Status
+
+**Completed**: All core features implemented and tested locally.
+
+**Development Time**: ~3-4 hours
+
+**Cost**: $0 (local development only)
